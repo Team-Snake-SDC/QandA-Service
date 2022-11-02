@@ -1,19 +1,27 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: 'me',
+  user: 'parkersturtevant',
   host: 'localhost',
   database: 'Questions_and_Answers',
   password: '',
   port: 5432,
 })
 
-const getQuestionsById = (request, response) => {
-  const id = parseInt(request.params.id);
 
-  pool.query('SELECT * FROM users WHERE product_id = $1 order by id LIMIT 10', [id], (error, data) => {
+const getQuestionsById = (req, res) => {
+  query = {
+    text: `SELECT * FROM Question WHERE product_id = ${req.body.product_id} order by id limit ${req.body.count} offset ${(req.body.page * req.body.count) - req.body.count}`
+  }
+  pool.query(query.text, (error, data) => {
     if (error) {
       throw error
+    } else {
+      res.status(200).json(data.rows)
     }
-    response.status(200).json(data.rows)
   })
+}
+
+
+module.exports = {
+  getQuestionsById
 }
