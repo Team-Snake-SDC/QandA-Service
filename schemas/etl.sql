@@ -4,3 +4,5 @@ DELIMITER ','
 CVS HEADER;
 
 COPY answers(id, question_id, body, date_written, answerer_name, answerer_email, reported, helpful) FROM 'data/answers.csv' DELIMITER ',' CSV HEADER;
+
+COPY "Answer Image"(id, answer_id, url) FROM 'data/answers_photos.csv' DELIMITER ',' CSV HEADER;
