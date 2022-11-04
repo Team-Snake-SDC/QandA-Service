@@ -16,6 +16,14 @@ app.post('/qa/questions', db.addQuestion);
 
 app.post('/qa/questions/:question_id/answers', db.addAnswer);
 
+app.put('/qa/questions/:question_id/helpful', db.updateHelpfulQuestion);
+
+app.put('/qa/questions/:question_id/report', db.updateReportedQuestion);
+
+app.put('/qa/answers/:answer_id/helpful', db.updateHelpfulAnswer);
+
+app.put('/qa/answers/:answer_id/report', db.updateReportedAnswer);
+
 app.listen(port, () => {
 	console.log(`App running on port ${port}.`);
 });
