@@ -5,32 +5,25 @@
 -- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- SET FOREIGN_KEY_CHECKS=0;
 
--- ---
--- Table QandA
---
--- ---
 
-DROP TABLE IF EXISTS QandA;
-
-CREATE TABLE QandA (
-  product_id INTEGER NULL DEFAULT NULL,
-  PRIMARY KEY (product_id)
-);
 
 -- ---
 -- Table Questions
 --
 -- ---
 
-DROP TABLE IF EXISTS Questions;
+DROP TABLE IF EXISTS Questions CASCADE;
 
 CREATE TABLE Questions (
-  question_id INTEGER NOT NULL DEFAULT NULL,
-  question_body VARCHAR(255) NULL DEFAULT NULL,
-  question_date VARCHAR(255) NULL DEFAULT NULL,
-  asker_name VARCHAR(255) NULL DEFAULT NULL,
+  id SERIAL NOT NULL,
   product_id INTEGER NULL DEFAULT NULL,
-  PRIMARY KEY (question_id)
+  body VARCHAR(255) NULL DEFAULT NULL,
+  date_written VARCHAR(255) NULL DEFAULT NULL,
+  asker_name VARCHAR(255) NULL DEFAULT NULL,
+  asker_email VARCHAR(255) NULL DEFAULT NULL,
+  reported BOOLEAN NULL DEFAULT FALSE,
+  helpful INTEGER NULL DEFAULT 0,
+  PRIMARY KEY (id)
 );
 
 -- ---
@@ -38,17 +31,18 @@ CREATE TABLE Questions (
 --
 -- ---
 
-DROP TABLE IF EXISTS Answers;
+DROP TABLE IF EXISTS Answers CASCADE;
 
 CREATE TABLE Answers (
-  question_id INTEGER NULL DEFAULT NULL
+  id SERIAL NOT NULL,
+  question_id INTEGER NULL DEFAULT NULL,
   body VARCHAR(255) NULL DEFAULT NULL,
-  date_written BIGINT NULL DEFAULT NULL,
+  date_written VARCHAR(255) NULL DEFAULT NULL,
   answerer_name VARCHAR(255) NULL DEFAULT NULL,
   answer_email VARCHAR(255) NULL DEFAULT NULL,
   reported BOOLEAN NULL DEFAULT false,
-  helpful INTEGER NULL DEFAULT NULL,
-  PRIMARY KEY (question_id)
+  helpful INTEGER NULL DEFAULT 0,
+  PRIMARY KEY (id)
 );
 
 -- ---
@@ -56,7 +50,7 @@ CREATE TABLE Answers (
 --
 -- ---
 
-DROP TABLE IF EXISTS Answer_Photos;
+DROP TABLE IF EXISTS Answer_Photos CASCADE;
 
 CREATE TABLE Answer_Photos (
   id SERIAL NOT NULL,
@@ -68,9 +62,7 @@ CREATE TABLE Answer_Photos (
 -- ---
 -- Foreign Keys
 -- ---
-
-ALTER TABLE Questions ADD FOREIGN KEY (product_id) REFERENCES QandA (product_id);
-ALTER TABLE Answers ADD FOREIGN KEY (question_id_questions) REFERENCES Questions (question_id);
+ALTER TABLE Answers ADD FOREIGN KEY (question_id) REFERENCES Questions (id);
 ALTER TABLE Answer_Photos ADD FOREIGN KEY (answer_id) REFERENCES Answers (id);
 
 -- ---

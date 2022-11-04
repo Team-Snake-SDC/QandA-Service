@@ -13,10 +13,9 @@ const getQuestionsById = (req, res) => {
 	let page = req.query.page || 1;
 	pool
 		.query(
-			`SELECT * from questions where product_id = $1 order by question_id limit ${count} offset ${
+			`select * from ( select *, (select json_object_agg(id, answers) from (select * from answers where question_id = questions.id) answers) as answers from questions where product_id = ${id} AND reported = false order by id limit ${count} offset ${
 				page * count - count
-			}`,
-			[id]
+			}) questions;`
 		)
 		.then((data) => {
 			const formattedData = {
@@ -36,7 +35,15 @@ const getAnswers = (req, res) => {
 	let count = req.query.count || 5;
 	let page = req.query.page || 1;
 	pool
-		.query('SELECT * FROM answers WHERE question_id = $1', [id])
+		.query(
+			`SELECT * FROM
+			(SELECT *,
+					(SELECT json_agg(answer_pho) FROM
+							(select id, url FROM answer_photos WHERE answer_id = answers.id
+							) as answer_pho
+					) as photos FROM answers WHERE question_id = ${id} AND reported = false
+			) as answers order by id limit ${count} offset  ${page * count - count}`
+		)
 		.then((data) => {
 			const formattedData = {
 				question: id,
@@ -56,7 +63,7 @@ const addQuestion = (req, res) => {
 	const question = req.body;
 	pool
 		.query(
-			'INSERT INTO questions (product_id, body, date, asker_name, asker_email) VALUES ($1, $2, $3, $4, $5)',
+			'INSERT INTO questions (product_id, body, date_written, asker_name, asker_email) VALUES ($1, $2, $3, $4, $5)',
 			[
 				question.product_id,
 				question.body,
