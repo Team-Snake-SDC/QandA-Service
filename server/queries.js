@@ -86,7 +86,7 @@ const addAnswer = (req, res) => {
 	const answer = req.body;
 	pool
 		.query(
-			'INSERT INTO answers (question_id, body, date_written, answerer_name, answerer_email) VALUES ($1, $2, $3, $4, $5)',
+			'INSERT INTO answers (question_id, body, date_written, answerer_name, answerer_email) VALUES ($1, $2, $3, $4, $5) RETURNING ID',
 			[
 				question_id,
 				answer.body,
@@ -96,7 +96,28 @@ const addAnswer = (req, res) => {
 			]
 		)
 		.then((data) => {
-			res.status(201).send('posted');
+			if (answer.photos.length === 0) {
+				res.status(201).send('posted');
+			} else {
+				let newId = data.rows[0].id;
+				let photoQueries = [];
+				answer.photos.forEach((photo) => {
+					photoQueries.push(
+						pool.query(
+							'INSERT INTO answer_photos(answer_id, url) VALUES ($1, $2)',
+							[newId, photo]
+						)
+					);
+				});
+				Promise.all(photoQueries)
+					.then((data) => {
+						res.status(201).send('posted photos');
+					})
+					.catch((err) => {
+						console.log(err);
+						res.status(500).send(err);
+					});
+			}
 		})
 		.catch((err) => {
 			console.log(err);
