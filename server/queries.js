@@ -13,16 +13,45 @@ const getQuestionsById = (req, res) => {
 	let page = req.query.page || 1;
 	pool
 		.query(
-			`select * from ( select *, (select json_object_agg(id, answers) from (select * from answers where question_id = questions.id) answers) as answers from questions where product_id = ${id} AND reported = false order by id limit ${count} offset ${
-				page * count - count
-			}) questions;`
+			`SELECT jsonb_build_object
+			(
+					'product_id', 5,
+					'results',
+				(SELECT jsonb_agg
+					(jsonb_build_object
+						(
+						'question_id', id,
+						'body', body,
+						'date_written', TO_CHAR(TO_TIMESTAMP(date_written / 1000), 'DD/MM/YYYY HH24:MI:SS'),
+						'asker_name', asker_name,
+						'asker_email', asker_email,
+						'reported', reported,
+						'helpful', helpful,
+						'answers',
+							(SELECT jsonb_object_agg
+								(
+								answer_id,
+									(SELECT jsonb_build_object
+										(
+											'id', answer_id,
+											'body', body,
+											'date_written', TO_CHAR(TO_TIMESTAMP(date_written / 1000), 'DD/MM/YYYY HH24:MI:SS'),
+											'answerer_name', answerer_name,
+											'answerer_email, answerer_email,
+											'reported', reported,
+											'helpful', helpful,
+											'photos',
+												(SELECT jsonb_agg(url) from answer_photos where answer_photos.answer_id = answers.id)
+										)
+									)
+								) from answers where answers.question_id = questions.id)
+						)
+					) from questions where product_id = ${id} AND reported = false limit ${count} offset((${page} - 1) * ${count})
+				)
+			)`
 		)
 		.then((data) => {
-			const formattedData = {
-				product_id: id,
-				results: data.rows,
-			};
-			res.status(200).send(formattedData);
+			res.status(200).send(data);
 		})
 		.catch((err) => {
 			console.log(err);

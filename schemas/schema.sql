@@ -27,7 +27,7 @@ CREATE TABLE Questions (
 );
 
 COPY questions(id, product_id, body, date_written, asker_name, asker_email, reported, helpful)
-FROM '/Users/parkersturtevant/Documents/HR/SDC/QandA-Service/questions.csv'
+FROM '/Users/parkersturtevant/Documents/HR/SDC/QandA-Service/data/questions.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -67,7 +67,7 @@ CREATE TABLE Answer_Photos (
   PRIMARY KEY (id)
 );
 
-COPY "Answer Image"(id, answer_id, url) FROM '/Users/parkersturtevant/Documents/HR/SDC/QandA-Service/data/answers_photos.csv' DELIMITER ',' CSV HEADER;
+COPY answer_photos(id, answer_id, url) FROM '/Users/parkersturtevant/Documents/HR/SDC/QandA-Service/data/answers_photos.csv' DELIMITER ',' CSV HEADER;
 
 -- ---
 -- Foreign Keys
@@ -87,17 +87,16 @@ ALTER TABLE Answer_Photos ADD FOREIGN KEY (answer_id) REFERENCES Answers (id);
 -- ---
 -- Test Data
 
-CREATE INDEX product_index ON questions(product_id);
-CREATE INDEX question_index ON answers(question_id);
-CREATE INDEX answer_index ON answers(id);
-CREATE INDEX answer_photo_index ON answers(answer_id);
 
 SELECT setval('questions_id_seq', COALESCE((SELECT MAX(id)+1 FROM questions), 1), false);
 SELECT setval('answer_id_seq', COALESCE((SELECT MAX(id)+1 FROM answers), 1), false);
 SELECT setval('answer_photos_id_seq', COALESCE((SELECT MAX(id)+1 FROM answer_photos), 1), false);
 
 -- ---
-
+CREATE INDEX product_index ON questions(product_id);
+CREATE INDEX question_index ON answers(question_id);
+CREATE INDEX answer_index ON answers(id);
+CREATE INDEX answer_photo_index ON answers(answer_id);
 -- INSERT INTO QandA (product_id) VALUES
 -- ();
 -- INSERT INTO Questions (question_id,question_body,question_date,asker_name,question_helpfulness,reported,product_id) VALUES
