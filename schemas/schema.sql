@@ -89,14 +89,11 @@ ALTER TABLE Answer_Photos ADD FOREIGN KEY (answer_id) REFERENCES Answers (id);
 
 
 SELECT setval('questions_id_seq', COALESCE((SELECT MAX(id)+1 FROM questions), 1), false);
-SELECT setval('answer_id_seq', COALESCE((SELECT MAX(id)+1 FROM answers), 1), false);
+SELECT setval('answers_id_seq', COALESCE((SELECT MAX(id)+1 FROM answers), 1), false);
 SELECT setval('answer_photos_id_seq', COALESCE((SELECT MAX(id)+1 FROM answer_photos), 1), false);
 
 -- ---
-CREATE INDEX product_index ON questions(product_id);
-CREATE INDEX question_index ON answers(question_id);
-CREATE INDEX answer_index ON answers(id);
-CREATE INDEX answer_photo_index ON answers(answer_id);
+
 -- INSERT INTO QandA (product_id) VALUES
 -- ();
 -- INSERT INTO Questions (question_id,question_body,question_date,asker_name,question_helpfulness,reported,product_id) VALUES
