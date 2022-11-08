@@ -11,7 +11,7 @@ app.get('/', (request, response) => {
 	response.send({ info: 'Node.js, Express, and Postgres API' });
 });
 
-app.get('/loaderio-2949cd18f67b7304b939bf01cdbb0a09', (req, res) =>
+app.get('loaderio-9df557dca23a80a39e8a1a83ba586910', (req, res) =>
 	res.send(loaderKey)
 );
 
