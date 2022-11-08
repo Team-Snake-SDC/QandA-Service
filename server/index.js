@@ -2,11 +2,18 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const db = require('./queries');
+const fs = require('fs');
 app.use(express.json());
+
+const loaderKey = fs.readFileSync('server/loader.txt');
 
 app.get('/', (request, response) => {
 	response.send({ info: 'Node.js, Express, and Postgres API' });
 });
+
+app.get('/loaderio-2949cd18f67b7304b939bf01cdbb0a09', (req, res) =>
+	res.send(loaderKey)
+);
 
 app.get('/qa/questions/:product_id', db.getQuestionsById);
 
