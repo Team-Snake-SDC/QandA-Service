@@ -15,7 +15,7 @@ app.get('/loaderio-2949cd18f67b7304b939bf01cdbb0a09', (req, res) =>
 	res.send(loaderKey)
 );
 
-app.get('/qa/questions/:product_id', db.getQuestionsById);
+app.get('/qa/questions', db.getQuestionsById);
 
 app.get('/qa/questions/:question_id/answers', db.getAnswers);
 
