@@ -34,7 +34,7 @@ const getQuestionsById = (req, res) => {
 										(
 											'id', id,
 											'body', body,
-											'date', TO_CHAR(TO_TIMESTAMP(date_written/1000), 'YYYY-MM-DD T HH24:MI:SS'),
+											'date', TO_CHAR(TO_TIMESTAMP(date_written / 1000), 'YYYY-MM-DD"T"HH24:MI:SS"Z"'),
 											'answerer_name', answerer_name,
 											'reported', reported,
 											'helpful', helpful,
@@ -77,7 +77,7 @@ const getAnswers = (req, res) => {
 							(
 								'answer_id', id,
 								'body', body,
-								'date', TO_CHAR(TO_TIMESTAMP(date_written/1000), 'YYYY-MM-DD T HH24:MI:SS'),
+								'date', TO_CHAR(TO_TIMESTAMP(date_written / 1000), 'YYYY-MM-DD"T"HH24:MI:SS"Z"'),
 								'answerer_name', answerer_name,
 								'helpfulness', helpful,
 								'photos',
