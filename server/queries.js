@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 const getQuestionsById = (req, res) => {
-	let id = req.params.product_id || req.body.product_id;
+	let id = req.params.product_id || req.query.product_id;
 	let count = req.query.count || 5;
 	let page = req.query.page || 1;
 	pool
@@ -23,7 +23,7 @@ const getQuestionsById = (req, res) => {
 						(
 						'question_id', id,
 						'body', body,
-						'date', TO_CHAR(TO_TIMESTAMP(date_written/1000), 'YYYY-MM-DD T HH24:MI:SS'),
+						'date', TO_CHAR(TO_TIMESTAMP(date_written/1000), 'YYYY-MM-DD"T"HH24:MI:SS"Z"'),
 						'asker_name', asker_name,
 						'reported', reported,
 						'helpful', helpful,
